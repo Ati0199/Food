@@ -103,13 +103,19 @@ window.addEventListener("DOMContentLoaded", () =>{
     const trigerModalClose = document.querySelector("[data-modal-close]");
     const trigerModalContent = document.querySelector(".modal__content");
 
+    const  timeOut = setTimeout(showModal, 5000);
+
+
     function closeModal(){
         trigerModalOpen.classList.add("hide");
         trigerModalOpen.classList.remove("show");
+        clearTimeout(timeOut);
     }
     function showModal(){
         trigerModalOpen.classList.remove("hide");
         trigerModalOpen.classList.add("show");
+        clearTimeout(timeOut);
+
     }
 
     trigerBtns.forEach(item =>{
@@ -135,7 +141,7 @@ window.addEventListener("DOMContentLoaded", () =>{
         if(e.key === "Escape" && trigerModalOpen.matches(".show")){
             closeModal();
             document.body.style.overflowY = "auto"; 
-            console.log("a") 
+            
         }
     })
 
@@ -147,4 +153,15 @@ window.addEventListener("DOMContentLoaded", () =>{
        }
     })
     
+
+    function scrollOpenModal(){
+        
+        if(window.scrollY + document.documentElement.clientHeight >= document.body.clientHeight){
+            showModal();
+            document.body.style.overflowY = "hidden";  
+            window.removeEventListener("scroll", scrollOpenModal)
+        }
+    }
+
+    window.addEventListener("scroll",scrollOpenModal)
 })
