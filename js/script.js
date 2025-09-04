@@ -35,6 +35,7 @@ window.addEventListener("DOMContentLoaded", () =>{
     });
         // tabs end ---------------------
     
+        // clock  start ----------------------
     function clock(endTime){
        
         const total = Date.parse(endTime) - Date.parse(new Date());
@@ -93,7 +94,57 @@ window.addEventListener("DOMContentLoaded", () =>{
     }
     showClock(".timer","2025-09-10");
 
-  
-  
+    // clock end --------------------------
+    
+    // Modal window start -----------------------
 
+    const trigerBtns = document.querySelectorAll("[data-modal-open]");
+    const trigerModalOpen = document.querySelector(".modal");
+    const trigerModalClose = document.querySelector("[data-modal-close]");
+    const trigerModalContent = document.querySelector(".modal__content");
+
+    function closeModal(){
+        trigerModalOpen.classList.add("hide");
+        trigerModalOpen.classList.remove("show");
+    }
+    function showModal(){
+        trigerModalOpen.classList.remove("hide");
+        trigerModalOpen.classList.add("show");
+    }
+
+    trigerBtns.forEach(item =>{
+        item.addEventListener("click", () =>{
+
+            if(trigerModalOpen.classList.contains("hide")){
+                showModal();
+                document.body.style.overflowY = "hidden";  
+            }
+        })
+    })
+    
+    
+    trigerModalClose.addEventListener("click", () =>{
+        if(trigerModalOpen.matches(".show")){
+            closeModal();
+            document.body.style.overflowY = "auto";      
+        }
+
+    })
+    
+    document.addEventListener("keydown",(e) =>{
+        if(e.key === "Escape" && trigerModalOpen.matches(".show")){
+            closeModal();
+            document.body.style.overflowY = "auto"; 
+            console.log("a") 
+        }
+    })
+
+    trigerModalOpen.addEventListener("click", (e) =>{
+       if(e.target && e.target === trigerModalOpen ){
+        closeModal();
+        document.body.style.overflowY = "auto";  
+        
+       }
+    })
+    
 })
