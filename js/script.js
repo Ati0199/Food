@@ -155,13 +155,79 @@ window.addEventListener("DOMContentLoaded", () =>{
     
 
     function scrollOpenModal(){
+       
         
-        if(window.scrollY + document.documentElement.clientHeight >= document.body.clientHeight){
+        if(window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight-1){
             showModal();
             document.body.style.overflowY = "hidden";  
             window.removeEventListener("scroll", scrollOpenModal)
         }
     }
 
-    window.addEventListener("scroll",scrollOpenModal)
+    window.addEventListener("scroll",scrollOpenModal);
+
+    // Modal window end -----------------------
+
+class MenuCard{
+    constructor(img, imgAlter, title, descr, price, parentSelector){
+        this.img = img;
+        this.imgAlter = imgAlter;
+        this.title = title;
+        this.descr = descr;
+        this.price = price;
+        this.usdRate = 41,24;
+        this.parentSelector = document.querySelector(parentSelector);  
+        this.changeToUHA();
+    }
+
+    changeToUHA(){
+        this.price = this.price * this.usdRate;
+    }
+
+    redner(){
+        const {img,imgAlter, title, descr, price, parentSelector} = this;
+        const elem = document.createElement("div");
+        elem.innerHTML = `
+            <div class="menu__item">
+                    <img src="${img}" alt="${imgAlter}">
+                    <h3 class="menu__item-subtitle">${title}</h3>
+                    <div class="menu__item-descr">${descr}></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>${price.toFixed(2)}</span> грн/день</div>
+                    </div>
+            </div>
+        `;
+        parentSelector.append(elem)
+    }
+};
+
+    new MenuCard (
+        "img/tabs/vegy.jpg",
+        "vegy",
+        `Меню "Фитнес"`,
+        `Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
+        5.55,
+        ".menu__field .container"
+    ).redner();
+
+      new MenuCard (
+        "img/tabs/elite.jpg",
+        "elite",
+        `Меню “Премиум”`,
+        `Меню "В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
+        13.34,
+        ".menu__field .container"
+    ).redner();
+
+     new MenuCard (
+        "img/tabs/post.jpg",
+        "post",
+        `Меню Меню "Постное"`,
+        `Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.`,
+        10.43,
+        ".menu__field .container"
+    ).redner();
+
+
 })
