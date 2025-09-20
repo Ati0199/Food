@@ -146,7 +146,7 @@ window.addEventListener("DOMContentLoaded", () =>{
     })
 
     trigerModalOpen.addEventListener("click", (e) =>{
-       if(e.target && e.target === trigerModalOpen ){
+       if(e.target && e.target === trigerModalOpen || e.target.matches("[data-modal-close]")){
         closeModal();
         document.body.style.overflowY = "auto";  
         
@@ -230,4 +230,70 @@ class MenuCard{
     ).redner();
 
 
+    // forms start
+        const forms = document.querySelectorAll("form");
+        forms.forEach(form => postData(form));
+
+        const MESSAGES = {
+            laoding: "Загрузка...",
+            success: "Спасибо ! Скоро мы с вами свяжемся",
+            failure: "Что-то пошло не так... Попробуйте снова !"
+        }
+
+        function postData(form){ 
+            form.addEventListener("submit", (e) =>{
+                e.preventDefault();
+
+                const loading = document.createElement("p");
+                loading.textContent = MESSAGES.laoding;
+                form.insertAdjacentElement("beforeend", loading)
+
+                const request = new XMLHttpRequest();
+                request.open("POST", "http://localhost:4200/support");
+                request.setRequestHeader("Content-type", "application/json");
+
+                const formData  = new FormData(form);
+                console.log(formData)
+                request.send(JSON.stringify(Object.fromEntries(formData)));
+                e.target.reset();
+
+                request.addEventListener("load", (e) =>{
+                    if(request.status === 200){
+                        
+                        showResponseModel(MESSAGES.success, loading)
+                    }else{
+                        showResponseModel(MESSAGES.failure, loading)
+
+                    }
+                })
+            })
+        }
+
+        function showResponseModel(message, loading){
+            loading.remove()
+            const prevModalDialog = document.querySelector(".modal__dialog");
+            prevModalDialog.classList.add("hide");
+            showModal();
+            const responseModal = document.createElement("div");
+            responseModal.classList.add("modal__dialog");
+            responseModal.innerHTML = `
+            <div class="modal__content">
+                    <div data-modal-close class="modal__close">&times;</div>
+                    <div class="modal__title">${message}</div>
+            </div>
+
+            `;
+        trigerModalOpen.append(responseModal);
+
+        const srmID = setTimeout(() =>{
+            responseModal.remove();
+            prevModalDialog.classList.remove("hide");
+            prevModalDialog.classList.add("show");
+            closeModal();
+            clearTimeout(srmID);
+        },2500)
+        }
+        
+
+    // forms end
 })
