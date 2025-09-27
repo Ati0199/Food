@@ -4,14 +4,13 @@ import cors from "cors";
 import multer from "multer";
 
 const app = express();
-const PORT = 4200;
+const PORT = 9999;
 
 app.use(cors());
 app.use(express.json());
 
 
 app.post("/support", (req, res) =>{
-    // const {name, phone} = req.body
 
     return res.status(200).send({"message": "success"});
 })

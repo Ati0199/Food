@@ -49,7 +49,7 @@ window.addEventListener("DOMContentLoaded", () =>{
             secondsTime = 0;
         }else{
             daysTime = Math.floor(total / (1000 * 60 * 60 *24));
-            hoursTime = Math.floor((total / (1000 * 60 *60)) % 24); 
+            hoursTime = Math.floor((total / (1000 * 60 *60)) % 24);
             minutesTime = Math.floor((total / (1000 * 60)) %60);
             secondsTime = Math.floor((total / 1000) % 60);
         }
@@ -92,7 +92,7 @@ window.addEventListener("DOMContentLoaded", () =>{
         }
 
     }
-    showClock(".timer","2025-09-10");
+    showClock(".timer","2025-12-31");
 
     // clock end --------------------------
     
@@ -107,7 +107,7 @@ window.addEventListener("DOMContentLoaded", () =>{
 
 
     function closeModal(){
-        trigerModalOpen.classList.add("hide");
+        trigerModalOpen.classList.add("hide"); 
         trigerModalOpen.classList.remove("show");
         clearTimeout(timeOut);
     }
@@ -191,10 +191,10 @@ class MenuCard{
             <div class="menu__item">
                     <img src="${img}" alt="${imgAlter}">
                     <h3 class="menu__item-subtitle">${title}</h3>
-                    <div class="menu__item-descr">${descr}></div>
+                    <div class="menu__item-descr">${descr}</div>
                     <div class="menu__item-price">
                         <div class="menu__item-cost">Цена:</div>
-                        <div class="menu__item-total"><span>${price.toFixed(2)}</span> грн/день</div>
+                        <div class="menu__item-total"><span>${price.toFixed(2)}</span>грн/день</div>
                     </div>
             </div>
         `;
@@ -202,32 +202,39 @@ class MenuCard{
     }
 };
 
-    new MenuCard (
-        "img/tabs/vegy.jpg",
-        "vegy",
-        `Меню "Фитнес"`,
-        `Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
-        5.55,
-        ".menu__field .container"
-    ).redner();
+    axios.get("http://localhost:9999/menu")
+        .then(data =>{
+            data.data.forEach(item =>{
+                new MenuCard(item.coverSrc, item.coverAlt, item.title, item.descr, item.price, ".menu__field .container").redner()
+            })
+        })
 
-      new MenuCard (
-        "img/tabs/elite.jpg",
-        "elite",
-        `Меню “Премиум”`,
-        `Меню "В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
-        13.34,
-        ".menu__field .container"
-    ).redner();
+    // new MenuCard (
+    //     "img/tabs/vegy.jpg",
+    //     "vegy",
+    //     `Меню "Фитнес"`,
+    //     `Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
+    //     5.55,
+    //     ".menu__field .container"
+    // ).redner();
 
-     new MenuCard (
-        "img/tabs/post.jpg",
-        "post",
-        `Меню Меню "Постное"`,
-        `Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.`,
-        10.43,
-        ".menu__field .container"
-    ).redner();
+    //   new MenuCard (
+    //     "img/tabs/elite.jpg",
+    //     "elite",
+    //     `Меню “Премиум”`,
+    //     `Меню "В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!`,
+    //     13.34,
+    //     ".menu__field .container"
+    // ).redner();
+
+    //  new MenuCard (
+    //     "img/tabs/post.jpg",
+    //     "post",
+    //     `Меню Меню "Постное"`,
+    //     `Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.`,
+    //     10.43,
+    //     ".menu__field .container"
+    // ).redner();
 
 
     // forms start
@@ -248,29 +255,57 @@ class MenuCard{
                 loading.textContent = MESSAGES.laoding;
                 form.insertAdjacentElement("beforeend", loading)
 
-                const request = new XMLHttpRequest();
-                request.open("POST", "http://localhost:4200/support");
-                request.setRequestHeader("Content-type", "application/json");
 
-                const formData  = new FormData(form);
-                console.log(formData)
-                request.send(JSON.stringify(Object.fromEntries(formData)));
-                e.target.reset();
+                const formData = new FormData(e.target);
+                const data = JSON.stringify(Object.fromEntries(formData.entries()));
 
-                request.addEventListener("load", (e) =>{
-                    if(request.status === 200){
-                        
-                        showResponseModel(MESSAGES.success, loading)
-                    }else{
-                        showResponseModel(MESSAGES.failure, loading)
+                axios.post("http://localhost:9999/support", data)
+                    .then(response =>{
+                        console.log(response);
+                        if(response.status === 201) {
+                            showResponseModel(MESSAGES.success);
+                        }else{
+                            showResponseModel(MESSAGES.failure)
+                        }
+                    })
+                    .catch( e => {
+                        console.log(e);
+                        showResponseModel(MESSAGES.failure)
+                    })
+                    .finally(() =>{
+                        loading.remove();
+                        e.target.reset();
+                        axios.get("http://localhost:9999/support")
+                        .then(data => console.log(data))
+                    })
 
-                    }
-                })
+                // fetch("http://localhost:9999/support/", {
+                //     method: "POST",
+                //     headers: {
+                //         "Content-type": "application/json"
+                //     },
+                //     body: JSON.stringify(Object.fromEntries(new FormData(form)))
+                // })
+                
+                // .then(response => {
+                //     console.log(response)
+                //     if(response.ok){
+                //         showResponseModel(MESSAGES.success, loading)
+                //     }else{
+                //         showResponseModel(MESSAGES.failure, loading)
+
+                //     }
+                // })
+                // .catch(e => console.log(e))
+                // .finally(() => {
+                //     loading.remove();
+                //     e.target.reset()   
+                // })
+                
             })
         }
 
-        function showResponseModel(message, loading){
-            loading.remove()
+        function showResponseModel(message){
             const prevModalDialog = document.querySelector(".modal__dialog");
             prevModalDialog.classList.add("hide");
             showModal();
