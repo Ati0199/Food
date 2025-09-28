@@ -331,4 +331,72 @@ class MenuCard{
         
 
     // forms end
+
+    // slider start
+    const slider = document.querySelectorAll(".offer__slide");
+    const nextBtn = document.querySelector(".offer__slider-next");
+    const prevBtn = document.querySelector(".offer__slider-prev");
+    const sliderCurrent = document.querySelector("#current");
+    const sliderTotal = document.querySelector("#total")
+    console.log(sliderCurrent)
+
+    let sliderIndex = 1;
+    
+    function showSlider(n){
+        
+        slider.forEach(item =>{
+            item.classList.add("hide");
+            item.classList.remove("show") 
+            
+        })
+        
+        if(n > slider.length){
+            sliderIndex = 1;
+        }
+        if(n<1){
+            sliderIndex = slider.length
+        }
+
+        sliderCurrent.textContent = setZero(sliderIndex)
+        sliderTotal.textContent = setZero(slider.length)
+       
+        if(!slider[sliderIndex-1].matches("show")){
+            slider[sliderIndex-1].classList.remove("hide")
+
+        }
+        
+    }
+
+    function sliderPlus(n){
+    
+        showSlider(sliderIndex+=n)
+    }
+    function sliderMinus(n){
+    
+        showSlider(sliderIndex-=n)
+    }
+    showSlider(1)
+
+        nextBtn.addEventListener("click", () => {
+            sliderPlus(1)
+            slider[sliderIndex-1].classList.add("sliderNextAnimation");
+            })
+            slider.forEach(item => {
+                // if(item.classList.matches(".sliderAnimtion")){
+
+                //     item.classList.remove("sliderAnimation")
+                // }
+            })
+
+        
+    prevBtn.addEventListener("click", () => {
+        sliderMinus(1)
+      
+            slider[sliderIndex-1].classList.add("sliderPrevAnimation");
+
+    })
+
+    // showSlider()
+
+    // slider end 
 })
